@@ -117,6 +117,27 @@ export function getRestaurantSnapshotById(restaurantId, cb) {
   });
 }
 
+export async function getRestaurantById(db, restaurantId) {
+  if (!restaurantId) {
+    console.log("Error: Invalid restaurantId received: ", restaurantId);
+    return;
+  }
+
+  const docRef = doc(db, "restaurants", restaurantId);
+  const docSnap = await getDoc(docRef);
+  
+  if (!docSnap.exists()) {
+    console.log("No such restaurant!");
+    return null;
+  }
+
+  return {
+    id: docSnap.id,
+    ...docSnap.data(),
+    timestamp: docSnap.data().timestamp.toDate(),
+  };
+}
+
 export async function getReviewsByRestaurantId(db, restaurantId) {
   if (!restaurantId) {
     console.log("Error: Invalid restaurantId received: ", restaurantId);
